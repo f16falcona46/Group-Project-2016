@@ -9,36 +9,37 @@ public class MainMenuBar implements ActionListener{
 	JMenu menuFile, menuRecording;
 	JMenuItem itemOpen, itemNew, itemSaveAs, itemQuite;
 	JMenuItem itemNewTrack, itemCreateRecording, itemPreview, itemExport;
+	
 	MainMenuBar(TrackList trackList){
 		MenuBar=new JMenuBar();
 
-		menuFile=new JMenu("menuFile");
+		menuFile=new JMenu("File");
 
-		itemOpen=new JMenuItem("itemOpen");
+		itemOpen=new JMenuItem("Open");
 		itemOpen.addActionListener(this);
 		menuFile.add(itemOpen);
-		itemNew=new JMenuItem("itemNew");
+		itemNew=new JMenuItem("New");
 		itemNew.addActionListener(this);
 		menuFile.add(itemNew);
-		itemSaveAs=new JMenuItem("itemSaveAs");
+		itemSaveAs=new JMenuItem("SaveAs");
 		itemSaveAs.addActionListener(this);
-		menuFile.add(itemSaveAs);
-		itemQuite=new JMenuItem("itemQuite");
+		menuFile.add(itemSaveAs); 
+		itemQuite=new JMenuItem("Quit");
 		itemQuite.addActionListener(this);
 		menuFile.add(itemQuite);
 
-		menuRecording=new JMenu("menuRecording");
+		menuRecording=new JMenu("Recording");
 
-		itemNewTrack=new JMenuItem("itemNewTrack");
+		itemNewTrack=new JMenuItem("NewTrack");
 		itemNewTrack.addActionListener(this);
 		menuRecording.add(itemNewTrack);
-		itemCreateRecording=new JMenuItem("itemCreateRecording");
+		itemCreateRecording=new JMenuItem("CreateRecording");
 		itemCreateRecording.addActionListener(this);
 		menuRecording.add(itemCreateRecording);
-		itemPreview=new JMenuItem("itemPreview");
+		itemPreview=new JMenuItem("Preview");
 		itemPreview.addActionListener(this);
 		menuRecording.add(itemPreview);
-		itemExport=new JMenuItem("itemExport");
+		itemExport=new JMenuItem("Export");
 		itemExport.addActionListener(this);
 		menuRecording.add(itemExport);		
 	}
