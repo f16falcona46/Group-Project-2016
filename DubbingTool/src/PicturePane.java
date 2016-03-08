@@ -20,7 +20,7 @@ public class PicturePane extends JPanel implements ActionListener, MouseListener
 	PicturePane (TrackList List) {
 		list = List;
 		
-		
+		   
 	}
 	
 	public void paintComponent(Graphics g) {
