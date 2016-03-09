@@ -19,25 +19,26 @@ public class PicturePane extends JPanel implements ActionListener, MouseListener
 	
 	PicturePane (TrackList List) {
 		list = List;
-		
-		
 	}
 	
 	public void paintComponent(Graphics g) {
 		this.setSize(new Dimension((int)(list.totalLength()*5), list.numTracks()*35));
 		for (int i=0; i< list.numTracks(); i++) {
+			//Draws the left section of the track
 			g.drawImage(leftTrack.getImage(), 
 					LEFT_SPACING + (int)(list.get(i).startTime()*5),
 					TOP_SPACING + i*IMAGE_HEIGHT, 
 					SIDE_WIDTH, 
 					IMAGE_HEIGHT,
 					null);
+			//Draws the center section of the track
 			g.drawImage(centerTrack.getImage(), 
 					LEFT_SPACING + (int)(list.get(i).startTime()*5)+ SIDE_WIDTH,
 					TOP_SPACING + i*IMAGE_HEIGHT, 
 					(list.get(i).getLength()*5) - SIDE_WIDTH*2, 
 					IMAGE_HEIGHT, 
 					null);
+			//Draws the right section of the track
 			g.drawImage(rightTrack.getImage(),
 					LEFT_SPACING + (int)((list.get(i).startTime()+getLength())*5) - SIDE_WIDTH,
 					TOP_SPACING + i*IMAGE_HEIGHT,
@@ -80,8 +81,7 @@ public class PicturePane extends JPanel implements ActionListener, MouseListener
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		
+		repaint();
 	}
 
 }
