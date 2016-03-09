@@ -15,14 +15,15 @@ public class PicturePane extends JPanel implements ActionListener, MouseListener
 	private static final int LEFT_SPACING = 10;
 	private static final int TOP_SPACING = 5;
 	private static final int SIDE_WIDTH = 10;
-	private static final int IMAGE_HEIGHT = 35;
+	private static final int IMAGE_HEIGHT = 32;
 	
 	PicturePane (TrackList List) {
 		list = List;
 	}
 	
 	public void paintComponent(Graphics g) {
-		this.setSize(new Dimension((int)(list.totalLength()*5), list.numTracks()*35));
+		this.setSize(new Dimension((int)(list.totalLength()*5), list.numTracks()*IMAGE_HEIGHT));
+		
 		for (int i=0; i< list.numTracks(); i++) {
 			//Draws the left section of the track
 			g.drawImage(leftTrack.getImage(), 
@@ -50,9 +51,10 @@ public class PicturePane extends JPanel implements ActionListener, MouseListener
 	}
 	
 	@Override
-	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
+	public void mouseClicked(MouseEvent e) {
+		int y = e.getY();
+		int tracknum = y%list.numTracks();
+		EditTrackDialogue eTD= new EditTrackDialogue(trackNum); 
 	}
 
 	@Override
