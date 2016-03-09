@@ -163,7 +163,8 @@ public class EditTrackDialog extends JFrame implements ActionListener {
 	            }
 		}
 		if(e.getSource() == chooseTrack){ //changes relative track of something..
-			Track relativeTrack = chooseTrack.getSelectedItem();
+			int relInd = chooseTrack.getSelectedIndex();
+			Track relativeTrack = Tracklist.get(relInd);
 			currentTrack.setRelativeTo(relativeTrack.getID());
 		}
 		if(e.getSource() == beginning){
@@ -178,9 +179,10 @@ public class EditTrackDialog extends JFrame implements ActionListener {
 			currentTrack.play();
 		}
 		if(e.getSource() == save){
-				
+			track = currentTrack;
 		}
 		if(e.getSource() == cancel){
+			track = backUpTrack;
 			this.setVisible(false);
 			this.dispose();
 		}
