@@ -27,22 +27,22 @@ public class PicturePane extends JPanel implements ActionListener, MouseListener
 		for (int i=0; i< list.numTracks(); i++) {
 			//Draws the left section of the track
 			g.drawImage(leftTrack.getImage(), 
-					(int)(list.get(i).startTime()*5),
-					i*IMAGE_HEIGHT, 
+					LEFT_SPACING + (int)(list.get(i).startTime()*5),
+					TOP_SPACING + i*IMAGE_HEIGHT, 
 					SIDE_WIDTH, 
 					IMAGE_HEIGHT,
 					null);
 			//Draws the center section of the track
 			g.drawImage(centerTrack.getImage(), 
-					(int)(list.get(i).startTime()*5)+ SIDE_WIDTH,
-					i*IMAGE_HEIGHT, 
+					LEFT_SPACING + (int)(list.get(i).startTime()*5)+ SIDE_WIDTH,
+					TOP_SPACING + i*IMAGE_HEIGHT, 
 					(list.get(i).getLength()*5) - SIDE_WIDTH*2, 
 					IMAGE_HEIGHT, 
 					null);
 			//Draws the right section of the track
 			g.drawImage(rightTrack.getImage(),
-					(int)((list.get(i).startTime()+list.get(i).getLength())*5) - SIDE_WIDTH,
-					i*IMAGE_HEIGHT,
+					LEFT_SPACING + (int)((list.get(i).startTime()+getLength())*5) - SIDE_WIDTH,
+					TOP_SPACING + i*IMAGE_HEIGHT,
 					SIDE_WIDTH,
 					IMAGE_HEIGHT,
 					null);
@@ -52,9 +52,14 @@ public class PicturePane extends JPanel implements ActionListener, MouseListener
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		int y = e.getY();
-		int tracknum = y/IMAGE_HEIGHT;
-		EditTrackDialogue eTD= new EditTrackDialogue(trackNum); 
+		if(e.getClickCount() == 2){
+			int y = e.getY();
+			int tracknum = y/32;
+			if(tracknum != 0){
+				EditTrackDialogue eTD= new EditTrackDialogue(trackNum); 
+			}
+		}
+		
 	}
 
 	@Override
