@@ -1,49 +1,78 @@
+import java.io.IOException;
 
-public class Track {
-	
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+
+
+public class Track 
+{
 	private String fileName;
 	private double length;
 	private double intensity;
 	private int relativeTo;
 	private boolean startEnd;
 	private int ID;
-	private byte[] soundBuffer;
-	private Clip soundClip;
+	private AudioInputStream dataStream;
 	private TrackList tracklist;
+	private Clip soundClip;
+	private AudioFormat format;
 	
-	public static final int RECORD;
-	public static final boolean START;
-	public static final boolean END;
+	public static final int RECORD = 1;
+	public static final boolean START = true;
+	public static final boolean END = false;
 	
-	Track(String newFileName, double newLength, double newIntensity, int newRelativeTo, boolean newStartEnd, int newID, TrackList newTracklist) {
-		fileName = newFileName;
-		length = newLength;
-		intensity = newIntensity;
-		relativeTo = newRelativeTo;
-		startEnd = newStartEnd;
-		ID = newID;
-		tracklist = newTracklist;
-		
+	public Track(String fileName, double intensity, int relativeTo, boolean startEnd, int ID, TrackList tracklist)
+	{
+		this.fileName = fileName;
+		this.intensity = intensity;
+		this.relativeTo = relativeTo;
+		this.startEnd = startEnd;
+		this.ID = ID;
+		this.tracklist = tracklist;
+		try 
+		{
+			soundClip = AudioSystem.getClip();
+		} 
+		catch(LineUnavailableException e) 
+		{
+			//TODO: dialog box
+			e.printStackTrace();
+		}
+		this.format = tracklist.getTrackListFormat();
 	}
 	
-	Track(int mode, TrackList trackList) {
-		
+	Track(int mode, TrackList tracklist)
+	{
+		this.tracklist = tracklist;
+		fileName = "";
+		length = -1;
+		intensity = 100;
 	}
 	
-	public void play() {
-		
+	
+	public void play()
+	{
+		reloadClip();
+		soundClip.start();
 	}
 	
-	public Clip getSound() {
-		
+	public Clip getSound()
+	{
+		reloadClip();
+		return soundClip;
 	}
-	
-	public void setFileName(String fileName) {
-		
+
+	public void setFileName(String fileName)
+	{
+		this.fileName = fileName;
+		reloadStream();
 	}
 	
 	public String getFileName() {
-		
+		return fileName;
 	}
 	
 	public void setLength(double length) {
@@ -51,7 +80,7 @@ public class Track {
 	}
 	
 	public double getLength() {
-		
+		return length;
 	}
 	
 	public void setIntensity(double intensity) {
@@ -59,7 +88,7 @@ public class Track {
 	}
 	
 	public double getIntensity() {
-		
+		return intensity;
 	}
 	
 	public void setRelativeTo(int ID) {
@@ -67,7 +96,7 @@ public class Track {
 	}
 	
 	public int getRelativeID() {
-		
+		return relativeTo;
 	}
 	
 	public void setStartEnd(boolean startEnd) {
@@ -75,15 +104,48 @@ public class Track {
 	}
 	
 	public boolean getStartEnd() {
-		
+		return startEnd;
 	}
 	
 	public boolean isGood() {
-		
+		return true;
 	}
 	
 	public double startTime() {
 		
 	}
+	
+	
+	
+	//~~
+	
 
+	private void reloadClip()
+	{
+		if(soundClip.isOpen())
+			soundClip.close();
+		try 
+		{
+			soundClip.open(dataStream);
+		} 
+		catch (LineUnavailableException e)
+		{
+			e.printStackTrace();
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+		soundClip.setFramePosition(0);
+	}
+	
+	private void reloadStream()
+	{
+		
+	}
+	
+	private AudioInputStream getConvertedInputStream()
+	{
+		
+	}
 }
