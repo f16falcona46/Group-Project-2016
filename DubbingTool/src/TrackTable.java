@@ -18,13 +18,14 @@ import javax.swing.JTable;
 
 public class TrackTable extends JPanel implements ActionListener, MouseListener {
 	private TrackList list;
+	private JTable table;
 	
 	TrackTable(TrackList list) {
 		super(new GridLayout(1,0));
 		
 		this.list = list;
 
-		JTable table = new JTable(new TrackTableModel(this.list));
+		table = new JTable(new TrackTableModel(this.list));
 		table.setPreferredScrollableViewportSize(new Dimension(500, 200));
 		table.setRowHeight(32);
 		table.setFillsViewportHeight(true);
@@ -35,12 +36,8 @@ public class TrackTable extends JPanel implements ActionListener, MouseListener 
 	}
 	/*Creates a JTable reflecting the provided TrackList, adding this TrackTable to the TrackList’s ActionListeners. The format of the table is as in the storyboard, except with no Actions column.*/
 	
-	private void updateTable() {
-		
-	}
-	
 	//TODO: IMPLEMENT
-	public void mouseClicked(MouseEvent ev) { 
+	public void mouseClicked(MouseEvent ev) {
 		/*
 		Single click:
 		Highlights track and activates edit and delete buttons
@@ -54,33 +51,41 @@ public class TrackTable extends JPanel implements ActionListener, MouseListener 
 	}
 
 	public void mouseEntered(MouseEvent ev) {
-		// TODO Auto-generated method stub
-		
+		//do nothing
 	}
 
 	public void mouseExited(MouseEvent ev) {
-		// TODO Auto-generated method stub
-		
+		//do nothing
 	}
 
 	public void mousePressed(MouseEvent ev) {
-		// TODO Auto-generated method stub
-		
+		//do nothing
 	}
 
 	public void mouseReleased(MouseEvent ev) {
-		// TODO Auto-generated method stub
-		
+		//do nothing
 	}
 	
 	//TODO: IMPLEMENT
 	public void actionPerformed(ActionEvent ev) {
+		switch (ev.getActionCommand()) {
+		case "updateScript":
+			this.invalidate();
+		}
+	}
+	
+	Track getSelected() {
 		/*
-		On receiving updateScript
-		Updates the table to reflect the TrackList.
 		Track getSelected()
 		Returns the selected Track.
 		*/
+		int row = table.getSelectedRow();
+		if (row == -1) {
+			return null;
+		}
+		else {
+			return list.get(row);
+		}
 	}
 	
 	public static void main(String[] args) {
@@ -120,8 +125,16 @@ class TrackTableModel extends AbstractTableModel {
 	public int getRowCount() {
 		return list.numTracks();
 	}
-
-	private static String toMMSS(double time) {
+	
+	private String formatFileName(int row) {
+		String filename = list.get(row).getFileName();
+		if (!list.get(row).isGood()) {
+			filename = "[Error] "+filename;
+		}
+		return filename;
+	}
+	
+	private static String formatStartTime(double time) {
 		Date date = new Date((long)(time*1000));
 		String formattedDate = new SimpleDateFormat("mm:ss").format(date);
 		return formattedDate;
@@ -146,12 +159,13 @@ class TrackTableModel extends AbstractTableModel {
 	public Object getValueAt(int row, int col) {
 		switch (col) {
 		case 0:
-			return list.get(row).getFileName();
+			return formatFileName(row);
 		case 1:
-			return toMMSS(list.get(row).startTime());
+			return formatStartTime(list.get(row).startTime());
 		case 2:
 			return formatAttachedTo(row);
 		case 3:
+			return Math.round(list.get(row).getIntensity())+"%";
 		default:
 			return "Error, column out of range";
 		}
