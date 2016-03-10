@@ -12,13 +12,13 @@ public class Track
 	private String fileName;
 	private double length;
 	private double intensity;
+	private long lengthInSamples;
 	private int relativeTo;
 	private boolean startEnd;
 	private int ID;
 	private AudioInputStream dataStream;
 	private TrackList tracklist;
 	private Clip soundClip;
-	private AudioFormat format;
 	
 	public static final int RECORD = 1;
 	public static final boolean START = true;
@@ -41,7 +41,6 @@ public class Track
 			//TODO: dialog box
 			e.printStackTrace();
 		}
-		this.format = tracklist.getTrackListFormat();
 	}
 	
 	Track(int mode, TrackList tracklist)
@@ -112,7 +111,14 @@ public class Track
 	}
 	
 	public double startTime() {
-		
+		if(relativeTo == -1)
+			return 0;
+		Track relativeTrack = tracklist.get(relativeTo);
+		double relativeTime = relativeTrack.startTime();
+		if(startEnd) //relative to beginning
+			return relativeTime;
+		else
+			return relativeTime + relativeTrack.getLength();
 	}
 	
 	
@@ -147,5 +153,11 @@ public class Track
 	private AudioInputStream getConvertedInputStream()
 	{
 		
+	}
+	
+	private double getLength(AudioInputStream s)
+	{
+		AudioFormat f = tracklist.getTrackListFormat();
+		double ret = ((double)s.getFrameLength() / (double)f.get)
 	}
 }
