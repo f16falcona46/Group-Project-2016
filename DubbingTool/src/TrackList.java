@@ -29,7 +29,7 @@ public class TrackList {
 	}
 	
 	public int numTracks() {
-		return tracks.size();
+		tracks.size();
 	}
 	
 	public List<Track> failedTracks() {
