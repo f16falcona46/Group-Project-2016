@@ -52,9 +52,13 @@ public class PicturePane extends JPanel implements ActionListener, MouseListener
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		int y = e.getY();
-		int tracknum = y/IMAGE_HEIGHT;
-		EditTrackDialogue eTD= new EditTrackDialogue(trackNum); 
+		if(e.getClickCount == 2){
+			int y = e.getY();
+			int tracknum = y/IMAGE_HEIGHT;
+			if(tracknum!=0){
+				EditTrackDialogue eTD= new EditTrackDialogue(trackNum); 
+			}
+		}
 	}
 
 	@Override
