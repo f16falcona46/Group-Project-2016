@@ -180,6 +180,8 @@ public class EditTrackDialog extends JFrame implements ActionListener {
 		}
 		if(e.getSource() == save){
 			track = currentTrack;
+			this.setVisible(false);
+			this.dispose();
 		}
 		if(e.getSource() == cancel){
 			track = backUpTrack;
