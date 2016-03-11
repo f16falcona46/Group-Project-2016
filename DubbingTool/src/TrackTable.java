@@ -1,5 +1,6 @@
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -9,27 +10,51 @@ import java.util.Date;
 
 import javax.swing.table.AbstractTableModel;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 /* SKELETON CLASS ONLY! DOES NOT DO ANYTHING. */
 
 public class TrackTable extends JPanel implements ActionListener, MouseListener {
 	private TrackList list;
 	private JTable table;
+	private JPopupMenu popup;
 	
 	TrackTable(TrackList list) {
 		super(new GridLayout(1,0));
 		
 		this.list = list;
+		
+		try { 
+			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel"); 
+		} catch (Exception ex) { 
+			ex.printStackTrace(); 
+		}
 
 		table = new JTable(new TrackTableModel(this.list));
 		table.setPreferredScrollableViewportSize(new Dimension(500, 200));
 		table.setRowHeight(32);
 		table.setFillsViewportHeight(true);
+		table.addMouseListener(this);
 
+		popup = new JPopupMenu();
+		JMenuItem edit = new JMenuItem("Edit...");
+		edit.setIcon(new ImageIcon(this.getClass().getResource("stock_edit_24.png")));
+		edit.addActionListener(this);
+		JMenuItem delete = new JMenuItem("Delete");
+		delete.setIcon(new ImageIcon(this.getClass().getResource("stock_trash_24.png")));
+		delete.addActionListener(this);
+		popup.add(edit);
+		popup.add(delete);
+		
 		JScrollPane scrollPane = new JScrollPane(table);
 		
 		add(scrollPane);
@@ -48,6 +73,18 @@ public class TrackTable extends JPanel implements ActionListener, MouseListener 
 		highlights clicked track
 		opens right click JPopupMenu with the following JMenuItems: “Edit”, “Delete”
 		*/
+		if (ev.getClickCount()==2 && !ev.isConsumed()) {
+			if (ev.getButton() == MouseEvent.BUTTON1) {
+				System.out.println("double");
+			}
+			ev.consume();
+		}
+		else {
+			if (ev.getButton() == MouseEvent.BUTTON3) {
+				System.out.println("rightclick?");
+				
+			}
+		}
 	}
 
 	public void mouseEntered(MouseEvent ev) {
@@ -59,18 +96,35 @@ public class TrackTable extends JPanel implements ActionListener, MouseListener 
 	}
 
 	public void mousePressed(MouseEvent ev) {
-		//do nothing
+		maybeShowPopup(ev);
 	}
 
 	public void mouseReleased(MouseEvent ev) {
-		//do nothing
+		maybeShowPopup(ev);
+	}
+	
+	private void maybeShowPopup(MouseEvent ev) {
+		if (ev.isPopupTrigger()) {
+			Point p = ev.getPoint();
+			int row = table.rowAtPoint(p);
+			ListSelectionModel model = table.getSelectionModel();
+			model.setSelectionInterval(row,row);
+			popup.show(ev.getComponent(), ev.getX(), ev.getY());
+		}
 	}
 	
 	//TODO: IMPLEMENT
 	public void actionPerformed(ActionEvent ev) {
+		System.out.println(ev.getActionCommand());
 		switch (ev.getActionCommand()) {
 		case "updateScript":
 			this.invalidate();
+		case "Edit...":
+			new EditTrackDialog(list.get(table.getSelectedRow()));
+		case "Delete":
+			if (DeleteTrackConfirmation.showDialog()) {
+				list.remove(table.getSelectedRow());
+			}
 		}
 	}
 	
@@ -123,7 +177,8 @@ class TrackTableModel extends AbstractTableModel {
 	}
 
 	public int getRowCount() {
-		return list.numTracks();
+		//return list.numTracks();
+		return 25;
 	}
 	
 	private String formatFileName(int row) {
@@ -159,13 +214,17 @@ class TrackTableModel extends AbstractTableModel {
 	public Object getValueAt(int row, int col) {
 		switch (col) {
 		case 0:
-			return formatFileName(row);
+			//return formatFileName(row);
+			return "FNAME";
 		case 1:
-			return formatStartTime(list.get(row).startTime());
+			//return formatStartTime(list.get(row).startTime());
+			return "STARTTIME";
 		case 2:
-			return formatAttachedTo(row);
+			//return formatAttachedTo(row);
+			return "ATTO";
 		case 3:
-			return Math.round(list.get(row).getIntensity())+"%";
+			//return Math.round(list.get(row).getIntensity())+"%";
+			return "INTEN";
 		default:
 			return "Error, column out of range";
 		}
