@@ -21,15 +21,15 @@ public class TrackList {
 	}
 	
 	public Track get(int index) {
-		tracks.get(index);
+		return tracks.get(index);
 	}
 	
 	public Track remove(int index) {
-		track.remove(index);
+		return track.remove(index);
 	}
 	
 	public int numTracks() {
-		tracks.size();
+		return tracks.size();
 	}
 	
 	public List<Track> failedTracks() {
