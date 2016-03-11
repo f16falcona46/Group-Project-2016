@@ -1,10 +1,13 @@
+import java.io.File;
 import java.io.IOException;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 
 public class Track 
@@ -48,13 +51,17 @@ public class Track
 		this.tracklist = tracklist;
 		fileName = "";
 		length = -1;
+		lengthInSamples = -1;
+		relativeTo = -1;
+		startEnd = START;
 		intensity = 100;
+//		dataStream = new RecorderStream();
 	}
 	
 	
 	public void play()
 	{
-		reloadClip();
+		loadStream();
 		soundClip.start();
 	}
 	
@@ -67,64 +74,72 @@ public class Track
 	public void setFileName(String fileName)
 	{
 		this.fileName = fileName;
-		reloadStream();
+		loadStream();
 	}
 	
-	public String getFileName() {
+	public String getFileName()
+	{
 		return fileName;
 	}
 	
-	public void setLength(double length) {
-		
-	}
-	
-	public double getLength() {
+	public double getLength()
+	{
 		return length;
 	}
 	
-	public void setIntensity(double intensity) {
-		
+	public void setIntensity(double intensity)
+	{
+		this.intensity = intensity;
 	}
 	
-	public double getIntensity() {
+	public double getIntensity()
+	{
 		return intensity;
 	}
 	
-	public void setRelativeTo(int ID) {
-		
+	public void setRelativeTo(int ID) 
+	{
+		this.relativeTo = ID;
 	}
 	
-	public int getRelativeID() {
+	public int getRelativeID() 
+	{
 		return relativeTo;
 	}
 	
-	public void setStartEnd(boolean startEnd) {
-		
+	public void setStartEnd(boolean startEnd) 
+	{
+		this.startEnd = startEnd;
 	}
 	
-	public boolean getStartEnd() {
+	public boolean getStartEnd()
+	{
 		return startEnd;
 	}
 	
-	public boolean isGood() {
+	public boolean isGood()
+	{
 		return true;
 	}
 	
-	public double startTime() {
+	public double startTime()
+{
 		if(relativeTo == -1)
 			return 0;
 		Track relativeTrack = tracklist.get(relativeTo);
 		double relativeTime = relativeTrack.startTime();
-		if(startEnd) //relative to beginning
+		if(startEnd == START) //relative to beginning
 			return relativeTime;
 		else
 			return relativeTime + relativeTrack.getLength();
 	}
 	
-	
+	public int getID()
+	{
+		return ID;
+	}
 	
 	//~~
-	
 
 	private void reloadClip()
 	{
@@ -133,6 +148,11 @@ public class Track
 		try 
 		{
 			soundClip.open(dataStream);
+			FloatControl volumeMod = (FloatControl)soundClip.getControl(FloatControl.Type.MASTER_GAIN);
+			float range = volumeMod.getMinimum();
+			
+			range *= ((100.0 - this.intensity) / 100.0);
+			volumeMod.setValue(range);
 		} 
 		catch (LineUnavailableException e)
 		{
@@ -145,19 +165,40 @@ public class Track
 		soundClip.setFramePosition(0);
 	}
 	
-	private void reloadStream()
+	private void loadStream() throws IOException, UnsupportedAudioFileException
 	{
-		
+		if(dataStream != null)
+			dataStream.close();
+		dataStream = AudioSystem.getAudioInputStream(new File(fileName));
 	}
 	
-	private AudioInputStream getConvertedInputStream()
+	private AudioInputStream getConvertedInputStream(AudioInputStream s)
 	{
-		
+		this.lengthInSamples = getSampleLength(s);
+		this.length = getLength(s, this.lengthInSamples);
+		if(s.getFormat().matches(tracklist.getTrackListFormat()))
+			return s;
+		if(AudioSystem.isConversionSupported(tracklist.getTrackListFormat(), s.getFormat()))
+		{
+			AudioInputStream ret = AudioSystem.getAudioInputStream(tracklist.getTrackListFormat(), s);
+			return ret;
+		}
+		return s;//CHANGEME
 	}
 	
-	private double getLength(AudioInputStream s)
+	private double getLength(AudioInputStream s, long samples)
 	{
 		AudioFormat f = tracklist.getTrackListFormat();
-		double ret = ((double)s.getFrameLength() / (double)f.get)
+		return ((double)samples / (double)f.getFrameRate());
+	}
+	
+	private long getSampleLength(AudioInputStream s)
+	{
+		double frameLength = s.getFrameLength();
+		double frameRate = (double) s.getFormat().getFrameRate();
+		double targetRate = (double) tracklist.getTrackListFormat().getFrameRate();
+		double ret = (targetRate / frameRate) * frameLength;
+		frameLength *= ((double)tracklist.getTrackListFormat().getChannels() / (double)s.getFormat().getChannels());
+		return (long)ret;
 	}
 }
