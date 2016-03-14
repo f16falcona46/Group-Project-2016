@@ -70,9 +70,46 @@ public class MainMenuBar implements ActionListener{
 			itemNewTrack.setEnabled(true);
 		}
 		if(e.getSource() == itemNew){
-			JOptionPane.showMessageDialog(null, "Selected Item: " + e.getActionCommand());
+			JFileChooser fc = new JFileChooser();
+			int returnVal = fc.showDialog(itemOpen, "Open");
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				File file = fc.getSelectedFile();
+			}
+			itemRecording.setEnabled(true);
+			itemSaveAs.setEnabled(true);
 		}
-
+		if(e.getSource() == itemSaveAs0){
+			if(e.getSource() == itemNew){
+				JFileChooser fc = new JFileChooser();
+				int returnVal = fc.showDialog(itemOpen, "Open");
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					File file = fc.getSelectedFile();
+					tracklist.setFileName(file.getName());
+					tracklist.save(file);
+				}
+		}
+		if(e.getSource() == itemQuite){
+			System.exit(0);
+		}
+		if(e.getSource() == itemNewTrack){
+			Track newtrack = new Track(track.RECORD, tracklist);
+			EditTrackDialog diag = new EditTRackdialog(newtrack);
+		}
+		if(e.getSource() == itemCreateRecording){
+			Track newtrack = new Track(track.RECORD, tracklist);
+		}
+		if(e.getSource() == itemPreview){
+			tracklist.play();
+		}
+		if(e.getSource() == itemExport){
+			if(e.getSource() == itemNew){
+				JFileChooser fc = new JFileChooser();
+				int returnVal = fc.showDialog(itemOpen, "Open");
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					File file = fc.getSelectedFile();
+					tracklist.setFileName(file.getName());
+					tracklist.export(file);
+				}
+		}
 	}
-
 }
