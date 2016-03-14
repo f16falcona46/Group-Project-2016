@@ -87,6 +87,9 @@ public class EditTrackDialog extends JFrame implements ActionListener {
 		c.gridy = 1;
 		pane.add(end, c);
 		
+		if(track.getID() == Tracklist.get(0).getID())
+			end.setEnabled(false);
+		
 	    ButtonGroup group = new ButtonGroup();
 	    group.add(beginning);
 	    group.add(end);
