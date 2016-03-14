@@ -12,37 +12,46 @@ public class PicturePane extends JPanel implements ActionListener, MouseListener
 	private ImageIcon leftTrack = new ImageIcon(this.getClass().getResource("GraphicsElementLeft"));
 	private ImageIcon rightTrack = new ImageIcon(this.getClass().getResource("GraphicsElementRight"));
 	private ImageIcon centerTrack = new ImageIcon(this.getClass().getResource("GraphicsElementCenter"));
-	private static final int LEFT_SPACING = 10;
-	private static final int TOP_SPACING = 5;
+	private static final int SCALE_SPACING = 15;
 	private static final int SIDE_WIDTH = 10;
 	private static final int IMAGE_HEIGHT = 32;
+	private static final int PIXELS_PER_SECOND = 5;
+	private static final int SCALE_INTERVAL = 5;
 	
 	PicturePane (TrackList List) {
 		list = List;
 	}
 	
 	public void paintComponent(Graphics g) {
-		this.setSize(new Dimension((int)(list.totalLength()*5), list.numTracks()*IMAGE_HEIGHT));
+		this.setSize(new Dimension((int)(list.totalLength()*PIXELS_PER_SECOND), list.numTracks()*IMAGE_HEIGHT + SCALE_SPACING));
+		
+		g.drawLine(0,SCALE_SPACING,this.getWidth(), SCALE_SPACING);
+		int mark = 0;
+		while(mark<list.totalLength()) {
+			g.drawLine(mark*PIXELS_PER_SECOND,0,mark*PIXELS_PER_SECOND,SCALE_SPACING);
+			g.drawString(mark,mark*PIXELS_PER_SECOND,SCALE_SPACING);
+			mark+=SCALE_INTERVAL;
+		}
 		
 		for (int i=0; i< list.numTracks(); i++) {
 			//Draws the left section of the track
 			g.drawImage(leftTrack.getImage(), 
-					(int)(list.get(i).startTime()*5),
-					i*IMAGE_HEIGHT, 
+					(int)(list.get(i).startTime()*PIXELS_PER_SECOND),
+					i*IMAGE_HEIGHT + SCALE_SPACING, 
 					SIDE_WIDTH, 
 					IMAGE_HEIGHT,
 					null);
 			//Draws the center section of the track
 			g.drawImage(centerTrack.getImage(), 
-					(int)(list.get(i).startTime()*5)+ SIDE_WIDTH,
-					i*IMAGE_HEIGHT, 
-					(list.get(i).getLength()*5) - SIDE_WIDTH*2, 
+					(int)(list.get(i).startTime()*PIXELS_PER_SECOND)+ SIDE_WIDTH,
+					i*IMAGE_HEIGHT + SCALE_SPACING, 
+					(list.get(i).getLength()*PIXELS_PER_SECOND) - SIDE_WIDTH*2, 
 					IMAGE_HEIGHT, 
 					null);
 			//Draws the right section of the track
 			g.drawImage(rightTrack.getImage(),
-					(int)((list.get(i).startTime()+getLength())*5) - SIDE_WIDTH,
-					i*IMAGE_HEIGHT,
+					(int)((list.get(i).startTime()+getLength())*PIXELS_PER_SECOND) - SIDE_WIDTH,
+					i*IMAGE_HEIGHT + SCALE_SPACING,
 					SIDE_WIDTH,
 					IMAGE_HEIGHT,
 					null);
@@ -54,7 +63,7 @@ public class PicturePane extends JPanel implements ActionListener, MouseListener
 	public void mouseClicked(MouseEvent e) {
 		if(e.getClickCount() == 2){
 			int y = e.getY();
-			int tracknum = y/32;
+			int tracknum = y/IMAGE_HEIGHT;
 			EditTrackDialogue eTD= new EditTrackDialogue(trackNum); 
 		}
 	}
