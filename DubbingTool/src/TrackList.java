@@ -1,8 +1,12 @@
-import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.*;
+
+import java.io.*;
 
 public class TrackList {
 	
@@ -16,7 +20,38 @@ public class TrackList {
 	}
 
 	TrackList(String name) {
-		
+		try {
+			File scriptFile = new File(name);
+			DocumentBuilderFactory bFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = bFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(scriptFile);
+			if (doc.getDocumentElement().getNodeName().toLowerCase().equals("script")) {
+				NodeList nList = doc.getElementsByTagName("track");
+				for (int i = 0; i < nList.getLength(); ++i) {
+					Node currNode = nList.item(i);
+					if (currNode.getNodeType() == Node.ELEMENT_NODE) {
+						Element element = (Element)currNode;
+						String trackName = element.getElementsByTagName("filename").item(0).getTextContent();
+						String relativeTo = element.getElementsByTagName("relativeto").item(0).getTextContent();
+						String relativePos = element.getElementsByTagName("relativeposition").item(0).getTextContent();
+						String intensity = element.getElementsByTagName("intensity").item(0).getTextContent();
+					}
+				}
+			}
+			else {
+				
+			}
+		}
+		catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void add(Track newTrack) {
