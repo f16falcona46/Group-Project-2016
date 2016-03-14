@@ -1,4 +1,5 @@
 import java.awt.List;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
@@ -6,10 +7,12 @@ import java.util.ArrayList;
 public class TrackList {
 	
 	private ArrayList<Track> tracks;
+	private ArrayList<ActionListener> actionlisteners;
 	private String fileName;
 	
 	TrackList() {
-		
+		tracks = new ArrayList<Track>();
+		actionlisteners = new ArrayList<ActionListener>();
 	}
 
 	TrackList(String name) {
@@ -25,19 +28,25 @@ public class TrackList {
 	}
 	
 	public Track remove(int index) {
-		return track.remove(index);
+		return tracks.remove(index);
 	}
 	
 	public int numTracks() {
 		return tracks.size();
 	}
 	
-	public List<Track> failedTracks() {
-		
+	public ArrayList<Track> failedTracks() {
+		ArrayList<Track> failedTracks = new ArrayList<Track>();
+		for (Track track : tracks) {
+			if (!track.isGood()) {
+				failedTracks.add(track);
+			}
+		}
+		return failedTracks;
 	}
 	
-	public List<Track> getTracks() {
-		
+	public ArrayList<Track> getTracks() {
+		return tracks;
 	}
 	
 	public double totalLength() {
@@ -49,11 +58,15 @@ public class TrackList {
 	}
 	
 	public void addActionListener(ActionListener listener) {
-		
+		actionlisteners.add(listener);
 	}
 	
 	public void updateActionListeners() {
-		
+		for (ActionListener listener : actionlisteners) {
+			ActionEvent ev = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "updateScript");
+			listener.actionPerformed(ev);
+		}
+		this.save();
 	}
 	
 	public void save() {
@@ -65,6 +78,6 @@ public class TrackList {
 	}
 	
 	public String getFileName() {
-		
+		return fileName;
 	}
 }
