@@ -66,6 +66,7 @@ public class TrackList {
 			ActionEvent ev = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "updateScript");
 			listener.actionPerformed(ev);
 		}
+		this.save();
 	}
 	
 	public void save() {
