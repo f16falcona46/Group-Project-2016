@@ -5,6 +5,10 @@ import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.*;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import java.io.*;
 
@@ -119,12 +123,63 @@ public class TrackList {
 			ActionEvent ev = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "updateScript");
 			listener.actionPerformed(ev);
 		}
-		this.save();
+		this.save(this.getFileName());
 	}
 	
-	public void save() {
+	public void save(String filename) {
 		try {
+			DocumentBuilderFactory dBuilderFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dBuilderFactory.newDocumentBuilder();
+			Document script = dBuilder.newDocument();
+			Element rootElement = script.createElement("script");
+			script.appendChild(rootElement);
 			
+			for (Track track : this.getTracks()) {
+				Element trackElement = script.createElement("track");
+				rootElement.appendChild(trackElement);
+				
+				Attr id = script.createAttribute("id");
+				id.setValue(Integer.toString(track.getID()));
+				trackElement.setAttributeNode(id);
+				
+				Element filename_xml = script.createElement("filename_xml");
+				trackElement.appendChild(filename_xml);
+				filename_xml.appendChild(script.createTextNode(track.getFileName()));
+				trackElement.appendChild(filename_xml);
+				
+				Element relativeTo = script.createElement("relativeTo");
+				trackElement.appendChild(relativeTo);
+				String relativeToString = "";
+				if (track.getStartEnd() == Track.START) {
+					relativeToString = "start";
+				}
+				else {
+					relativeToString = "end";
+				}
+				relativeTo.appendChild(script.createTextNode(relativeToString));
+				trackElement.appendChild(relativeTo);
+				
+				Element relativePosition = script.createElement("relativePosition");
+				trackElement.appendChild(relativePosition);
+				relativePosition.appendChild(script.createTextNode(Double.toString(track.getIntensity())));
+				trackElement.appendChild(relativePosition);
+				
+				Element intensity = script.createElement("intensity");
+				trackElement.appendChild(intensity);
+				intensity.appendChild(script.createTextNode(Double.toString(track.getIntensity())));
+				trackElement.appendChild(intensity);
+				
+				Element length = script.createElement("length");
+				trackElement.appendChild(length);
+				length.appendChild(script.createTextNode("0"));
+				trackElement.appendChild(length);
+				
+				TransformerFactory tFactory = TransformerFactory.newInstance();
+				Transformer transformer = tFactory.newTransformer();
+				DOMSource source = new DOMSource(script);
+				StreamResult sresult = new StreamResult(new File(filename));
+				transformer.transform(source, sresult);
+			}
 		}
 	}
 	
