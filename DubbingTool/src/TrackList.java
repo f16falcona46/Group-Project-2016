@@ -19,7 +19,9 @@ public class TrackList {
 		actionlisteners = new ArrayList<ActionListener>();
 	}
 
-	TrackList(String name) {
+	TrackList(String name) throws BadFileException, BadPathException {
+		tracks = new ArrayList<Track>();
+		actionlisteners = new ArrayList<ActionListener>();
 		try {
 			File scriptFile = new File(name);
 			DocumentBuilderFactory bFactory = DocumentBuilderFactory.newInstance();
@@ -31,26 +33,42 @@ public class TrackList {
 					Node currNode = nList.item(i);
 					if (currNode.getNodeType() == Node.ELEMENT_NODE) {
 						Element element = (Element)currNode;
+						String id = element.getAttribute("id");
 						String trackName = element.getElementsByTagName("filename").item(0).getTextContent();
 						String relativeTo = element.getElementsByTagName("relativeto").item(0).getTextContent();
 						String relativePos = element.getElementsByTagName("relativeposition").item(0).getTextContent();
 						String intensity = element.getElementsByTagName("intensity").item(0).getTextContent();
+						
+						boolean startend = false;
+						if (relativePos.equals("start")) {
+							startend = Track.START;
+						}
+						else {
+							startend = Track.END;
+						}
+						Track track = new Track(
+								trackName,
+								Double.parseDouble(intensity),
+								Integer.parseInt(relativeTo),
+								startend,
+								Integer.parseInt(id),
+								this);
+						this.add(track);
 					}
 				}
 			}
 			else {
-				
+				throw new BadFileException();
 			}
 		}
 		catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new BadFileException();
+		}
+		catch (SAXException e) {
+			throw new BadFileException();
+		}
+		catch (IOException e) {
+			throw new BadPathException();
 		}
 	}
 	
@@ -105,11 +123,61 @@ public class TrackList {
 	}
 	
 	public void save() {
-		
+		try {
+			
+		}
 	}
 	
-	public void setFileName(String fileName) {
-		
+	public void setFileName(String fileName) throws BadFileException, BadPathException {
+		tracks = new ArrayList<Track>();
+		try {
+			File scriptFile = new File(fileName);
+			DocumentBuilderFactory bFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = bFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(scriptFile);
+			if (doc.getDocumentElement().getNodeName().toLowerCase().equals("script")) {
+				NodeList nList = doc.getElementsByTagName("track");
+				for (int i = 0; i < nList.getLength(); ++i) {
+					Node currNode = nList.item(i);
+					if (currNode.getNodeType() == Node.ELEMENT_NODE) {
+						Element element = (Element)currNode;
+						String id = element.getAttribute("id");
+						String trackName = element.getElementsByTagName("filename").item(0).getTextContent();
+						String relativeTo = element.getElementsByTagName("relativeto").item(0).getTextContent();
+						String relativePos = element.getElementsByTagName("relativeposition").item(0).getTextContent();
+						String intensity = element.getElementsByTagName("intensity").item(0).getTextContent();
+						
+						boolean startend = false;
+						if (relativePos.equals("start")) {
+							startend = Track.START;
+						}
+						else {
+							startend = Track.END;
+						}
+						Track track = new Track(
+								trackName,
+								Double.parseDouble(intensity),
+								Integer.parseInt(relativeTo),
+								startend,
+								Integer.parseInt(id),
+								this);
+						this.add(track);
+					}
+				}
+			}
+			else {
+				throw new BadFileException();
+			}
+		}
+		catch (ParserConfigurationException e) {
+			throw new BadFileException();
+		}
+		catch (SAXException e) {
+			throw new BadFileException();
+		}
+		catch (IOException e) {
+			throw new BadPathException();
+		}
 	}
 	
 	public String getFileName() {
