@@ -14,7 +14,10 @@ public class TrackList {
 	private ArrayList<ActionListener> actionlisteners;
 	private String fileName;
 	
+	private AudioFormat format;
+	
 	TrackList() {
+		format = null;
 		tracks = new ArrayList<Track>();
 		actionlisteners = new ArrayList<ActionListener>();
 	}
@@ -70,6 +73,7 @@ public class TrackList {
 		catch (IOException e) {
 			throw new BadPathException();
 		}
+		format = getHighestQualityFormat();
 	}
 	
 	public void add(Track newTrack) {
@@ -196,5 +200,20 @@ public class TrackList {
 	
 	public String getFileName() {
 		return fileName;
+	}
+	
+	public AudioFormat getTrackListFormat()
+	{
+		return format;
+	}
+	
+	public static int nextID()
+	{
+		return currentID++;
+	}
+	
+	private AudioFormat getHighestQualityFormat()
+	{
+		
 	}
 }
