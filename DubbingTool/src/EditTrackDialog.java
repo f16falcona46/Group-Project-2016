@@ -12,15 +12,20 @@ import javax.swing.border.*;
 public class EditTrackDialog extends JFrame implements ActionListener {
 	private Track currentTrack;
 	private Track backUpTrack;
+	private Track relativeTrack;
+	private TrackList list;
+	private int trackID,relativeID;
 	private JButton chooser, preview, save, cancel;
 	private JRadioButton beginning, end;
 	private JComboBox chooseTrack;
 	private JTextField text;
 	private JFileChooser fc;
 	private JSlider ISlider;
-	EditTrackDialog(Track track){
+	EditTrackDialog(Track track, TrackList list){
+		trackID = track.getID();
 		backUpTrack = track;
 		currentTrack = track;
+		this.list = list;
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
 		this.setResizable(false);
 		try { 
@@ -44,6 +49,7 @@ public class EditTrackDialog extends JFrame implements ActionListener {
 		text = new JTextField();
 		text.setEditable(false);
 		text.setFont(new Font("Tahoma",Font.PLAIN,12));
+		text.setText(track.getFileName());
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 1;
 		c.gridy = 0;
@@ -65,8 +71,8 @@ public class EditTrackDialog extends JFrame implements ActionListener {
 		pane.add(relativeTrack, c);
 		
 		
-		String[] tracks = getTrackNames();
-		chooseTrack = new JComboBox(); //with tracks
+		String[] tracks = getTrackNames(list);
+		chooseTrack = new JComboBox<String>(tracks); 
 		chooseTrack.addActionListener(this);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 1;
@@ -87,7 +93,7 @@ public class EditTrackDialog extends JFrame implements ActionListener {
 		c.gridy = 1;
 		pane.add(end, c);
 		
-		if(track.getID() == Tracklist.get(0).getID())
+		if(track.getID() == list.get(0).getID())
 			end.setEnabled(false);
 		
 	    ButtonGroup group = new ButtonGroup();
@@ -144,19 +150,17 @@ public class EditTrackDialog extends JFrame implements ActionListener {
 		SwingUtilities.getRootPane(save).setDefaultButton(save);
 		this.setVisible(true);
 		
-		
 	}
-	private String[] getTrackNames(List<Track> list){
-		String[] trackNames = new String[list.size()+1];
+	private String[] getTrackNames(TrackList list){
+		String[] trackNames = new String[list.numTracks()+1];
 		trackNames[0] = "Start of Script";
-		for(int i = 1; i<list.size()+1; i++){
+		for(int i = 1; i<list.numTracks()+1; i++){
 			trackNames[i] = list.get(i-1).getFileName();
 		}
 		return trackNames;
 	}
-
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == chooser){ //FileChooser
+		if(e.getSource() == chooser){ 
 			 int returnVal = fc.showOpenDialog(EditTrackDialog.this);
 	            if (returnVal == JFileChooser.APPROVE_OPTION) {
 	                File file = fc.getSelectedFile();
@@ -165,33 +169,38 @@ public class EditTrackDialog extends JFrame implements ActionListener {
 	                text.setText("");
 	            }
 		}
-		if(e.getSource() == chooseTrack){ //changes relative track of something..
+		if(e.getSource() == chooseTrack){ 
 			int relInd = chooseTrack.getSelectedIndex();
-			Track relativeTrack = Tracklist.get(relInd);
-			currentTrack.setRelativeTo(relativeTrack.getID());
+			if(relInd == 0)
+				currentTrack.setRelativeTo(0);
+			else{
+				end.setEnabled(true);
+				relativeTrack = list.get(relInd-1);
+				relativeID = relativeTrack.getID();
+				currentTrack.setRelativeTo(relativeID);
+			}
 		}
 		if(e.getSource() == beginning){
-			System.out.println("beginning");
-			currentTrack.setStartEnd(true);
+			currentTrack.setStartEnd(Track.START);
 		}
 		if(e.getSource() == end){
-			currentTrack.setStartEnd(false);
-			System.out.println("end");
+			currentTrack.setStartEnd(Track.END);
 		}
 		if(e.getSource() == preview){
 			currentTrack.play();
 		}
 		if(e.getSource() == save){
-			track = currentTrack;
+			Track track = list.get(trackID);
+			track.setIntensity(currentTrack.getIntensity());
+			track.setRelativeTo(relativeID);
+			track.setStartEnd(currentTrack.getStartEnd());
 			this.setVisible(false);
 			this.dispose();
+			
 		}
 		if(e.getSource() == cancel){
-			track = backUpTrack;
 			this.setVisible(false);
 			this.dispose();
 		}
 	}
-
-
 }
