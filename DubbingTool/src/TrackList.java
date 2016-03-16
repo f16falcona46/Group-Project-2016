@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
+import javax.sound.sampled.AudioFormat;
 import javax.xml.parsers.*;
 
 import java.io.*;
@@ -15,6 +16,7 @@ public class TrackList {
 	private String fileName;
 	
 	private AudioFormat format;
+	private static int currentID = 1;
 	
 	TrackList() {
 		format = null;
@@ -74,6 +76,16 @@ public class TrackList {
 			throw new BadPathException();
 		}
 		format = getHighestQualityFormat();
+		
+		int highestID = 1;
+		
+		for(Track t : tracks)
+		{
+			if(t.getID() > highestID)
+				highestID = t.getID();
+		}
+		
+		currentID = highestID;
 	}
 	
 	public void add(Track newTrack) {
