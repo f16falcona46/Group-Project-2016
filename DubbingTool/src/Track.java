@@ -23,9 +23,12 @@ public class Track
 	private TrackList tracklist;
 	private Clip soundClip;
 	
+	private boolean isGood;
+	
 	public static final int RECORD = 1;
 	public static final boolean START = true;
 	public static final boolean END = false;
+	public static final int TRACK_BEGINNING = 0;
 	
 	public Track(String fileName, double intensity, int relativeTo, boolean startEnd, int ID, TrackList tracklist)
 	{
@@ -41,8 +44,23 @@ public class Track
 		} 
 		catch(LineUnavailableException e) 
 		{
-			//TODO: dialog box
 			e.printStackTrace();
+		}
+		try 
+		{
+			loadStream();
+		} 
+		catch (IOException e) 
+		{
+			isGood = false;
+		} 
+		catch (UnsupportedAudioFileException e)
+		{
+			isGood = false;
+		} 
+		catch (UnsupportedConversionException e)
+		{
+			isGood = false;
 		}
 	}
 	
@@ -52,16 +70,30 @@ public class Track
 		fileName = "";
 		length = -1;
 		lengthInSamples = -1;
-		relativeTo = -1;
+		relativeTo = Track.TRACK_BEGINNING;
 		startEnd = START;
 		intensity = 100;
-//		dataStream = new RecorderStream();
 	}
 	
 	
 	public void play()
 	{
-		loadStream();
+		try 
+		{
+			loadStream();
+		}
+		catch (IOException e) 
+		{
+			isGood = false;
+		} 
+		catch (UnsupportedAudioFileException e)
+		{
+			isGood = false;
+		} 
+		catch (UnsupportedConversionException e)
+		{
+			isGood = false;
+		}
 		soundClip.start();
 	}
 	
@@ -74,7 +106,14 @@ public class Track
 	public void setFileName(String fileName)
 	{
 		this.fileName = fileName;
-		loadStream();
+		try
+		{
+			loadStream();
+		} 
+		catch(Exception e) 
+		{
+			isGood = false;
+		}
 	}
 	
 	public String getFileName()
@@ -119,12 +158,12 @@ public class Track
 	
 	public boolean isGood()
 	{
-		return true;
+		return isGood;
 	}
 	
 	public double startTime()
-{
-		if(relativeTo == -1)
+	{
+		if(relativeTo == 0)
 			return 0;
 		Track relativeTrack = tracklist.get(relativeTo);
 		double relativeTime = relativeTrack.startTime();
@@ -165,14 +204,14 @@ public class Track
 		soundClip.setFramePosition(0);
 	}
 	
-	private void loadStream() throws IOException, UnsupportedAudioFileException
+	private void loadStream() throws IOException, UnsupportedAudioFileException, UnsupportedConversionException
 	{
 		if(dataStream != null)
 			dataStream.close();
-		dataStream = AudioSystem.getAudioInputStream(new File(fileName));
+		dataStream = getConvertedInputStream(AudioSystem.getAudioInputStream(new File(fileName)));
 	}
 	
-	private AudioInputStream getConvertedInputStream(AudioInputStream s)
+	private AudioInputStream getConvertedInputStream(AudioInputStream s) throws UnsupportedConversionException
 	{
 		this.lengthInSamples = getSampleLength(s);
 		this.length = getLength(s, this.lengthInSamples);
@@ -183,7 +222,7 @@ public class Track
 			AudioInputStream ret = AudioSystem.getAudioInputStream(tracklist.getTrackListFormat(), s);
 			return ret;
 		}
-		return s;//CHANGEME
+		throw new UnsupportedConversionException();
 	}
 	
 	private double getLength(AudioInputStream s, long samples)

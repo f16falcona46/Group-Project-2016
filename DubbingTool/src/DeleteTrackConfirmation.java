@@ -1,8 +1,6 @@
 import javax.swing.*;
 
 public class DeleteTrackConfirmation {
-
-	ImageIcon error = new ImageIcon(this.getClass().getResource("Yellow Error.png"));
 	
 	public static boolean showDialogue() {
 		int prompt = 0;
