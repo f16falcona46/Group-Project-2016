@@ -41,7 +41,9 @@ public class MainMenuBar implements ActionListener{
 		menuRecording.add(itemPreview);
 		itemExport=new JMenuItem("Export");
 		itemExport.addActionListener(this);
-		menuRecording.add(itemExport);		
+		menuRecording.add(itemExport);
+		
+		
 	}
 	public void disableButtons(){
 		itemSaveAs.setEnabled(false);

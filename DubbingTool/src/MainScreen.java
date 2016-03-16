@@ -11,6 +11,7 @@ public class MainScreen extends JFrame{
 		
 		this.tracklist = tracklist;
 		MainMenuBar menuBar = new MainMenuBar(tracklist);
+		mainFrame.add(menuBar);
 		//TrackTablePane trackTablePane = new TrackTablePane(tracklist);
 		PicturePane picturPane = new PicturePane(tracklist);
 		//JScrollPane rightPane = new JScrollPane(picturePane.contentPane);
