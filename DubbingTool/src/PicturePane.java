@@ -50,13 +50,13 @@ public class PicturePane extends JPanel implements ActionListener, MouseListener
 					null);
 			//Draws the right section of the track
 			g.drawImage(rightTrack.getImage(),
-					(int)((list.get(i).startTime()+getLength())*PIXELS_PER_SECOND) - SIDE_WIDTH,
+					(int)((list.get(i).startTime()+list.getLength())*PIXELS_PER_SECOND) - SIDE_WIDTH,
 					i*IMAGE_HEIGHT + SCALE_SPACING,
 					SIDE_WIDTH,
 					IMAGE_HEIGHT,
 					null);
 		}
-		
+	
 	}
 	
 	@Override
