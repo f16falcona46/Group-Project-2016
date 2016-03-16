@@ -74,6 +74,7 @@ public class TrackList {
 	
 	public void add(Track newTrack) {
 		tracks.add(newTrack);
+		updateActionListeners();
 	}
 	
 	public Track get(int index) {
@@ -102,11 +103,22 @@ public class TrackList {
 		return tracks;
 	}
 	
-	public double totalLength() {
-		
+	public double totalLength(){
+		double end = 0;
+		for(Track t : tracks)
+		{
+			if(t.startTime() + t.getLength() > end)
+				end = t.startTime() + t.getLength();
+		}
+		return end;
 	}
 	
-	public void play() {
+	public void play() 
+	{
+		if(failedTracks().size() > 0)
+			return;
+		long currentTime = System.currentTimeMillis();
+		
 		
 	}
 	
@@ -122,7 +134,7 @@ public class TrackList {
 		this.save();
 	}
 	
-	public void save() {
+	public void save(String fileName) {
 		try {
 			
 		}
@@ -131,6 +143,7 @@ public class TrackList {
 	public void setFileName(String fileName) throws BadFileException, BadPathException {
 		tracks = new ArrayList<Track>();
 		try {
+			this.fileName = fileName;
 			File scriptFile = new File(fileName);
 			DocumentBuilderFactory bFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = bFactory.newDocumentBuilder();
@@ -178,6 +191,7 @@ public class TrackList {
 		catch (IOException e) {
 			throw new BadPathException();
 		}
+		updateActionListeners();
 	}
 	
 	public String getFileName() {
