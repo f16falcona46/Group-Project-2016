@@ -21,7 +21,7 @@ public class MainMenuBar implements ActionListener{
 		itemNew=new JMenuItem("New");
 		itemNew.addActionListener(this);
 		menuFile.add(itemNew);
-		itemSaveAs=new JMenuItem("SaveAs");
+		itemSaveAs=new JMenuItem("Save As");
 		itemSaveAs.addActionListener(this);
 		menuFile.add(itemSaveAs); 
 		itemQuite=new JMenuItem("Quit");
@@ -30,10 +30,10 @@ public class MainMenuBar implements ActionListener{
 
 		menuRecording=new JMenu("Recording");
 
-		itemNewTrack=new JMenuItem("NewTrack");
+		itemNewTrack=new JMenuItem("New Track");
 		itemNewTrack.addActionListener(this);
 		menuRecording.add(itemNewTrack);
-		itemCreateRecording=new JMenuItem("CreateRecording");
+		itemCreateRecording=new JMenuItem("Create Recording");
 		itemCreateRecording.addActionListener(this);
 		menuRecording.add(itemCreateRecording);
 		itemPreview=new JMenuItem("Preview");
@@ -42,6 +42,10 @@ public class MainMenuBar implements ActionListener{
 		itemExport=new JMenuItem("Export");
 		itemExport.addActionListener(this);
 		menuRecording.add(itemExport);
+		
+		MenuBar.add(menuFile);
+		MenuBar.add(menuRecording);
+		
 		
 		
 	}
