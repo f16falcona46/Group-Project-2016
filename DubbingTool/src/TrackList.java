@@ -214,6 +214,7 @@ public class TrackList {
 	public void setFileName(String fileName) throws BadFileException, BadPathException {
 		tracks = new ArrayList<Track>();
 		try {
+			this.fileName = fileName;
 			File scriptFile = new File(fileName);
 			DocumentBuilderFactory bFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = bFactory.newDocumentBuilder();
@@ -265,5 +266,24 @@ public class TrackList {
 	
 	public String getFileName() {
 		return fileName;
+	}
+	
+	private AudioFormat getHighestQualityFormat()
+	{
+  	}
+	
+	public AudioFormat getTrackListFormat()
+	{
+		return format;
+	}
+
+	public static int nextID()
+	{
+		return currentID++;
+	}
+	
+	private AudioFormat getHighestQualityFormat()
+	{
+		
 	}
 }
