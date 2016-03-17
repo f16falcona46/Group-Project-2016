@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
+import javax.sound.sampled.AudioFormat;
 import javax.xml.parsers.*;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -18,7 +19,11 @@ public class TrackList {
 	private ArrayList<ActionListener> actionlisteners;
 	private String fileName;
 	
+	private AudioFormat format;
+	private static int currentID = 1;
+	
 	TrackList() {
+		format = null;
 		tracks = new ArrayList<Track>();
 		actionlisteners = new ArrayList<ActionListener>();
 	}
@@ -74,10 +79,22 @@ public class TrackList {
 		catch (IOException e) {
 			throw new BadPathException();
 		}
+		format = getHighestQualityFormat();
+		
+		int highestID = 1;
+		
+		for(Track t : tracks)
+		{
+			if(t.getID() > highestID)
+				highestID = t.getID();
+		}
+		
+		currentID = highestID;
 	}
 	
 	public void add(Track newTrack) {
 		tracks.add(newTrack);
+		updateActionListeners();
 	}
 	
 	public Track get(int index) {
@@ -106,11 +123,22 @@ public class TrackList {
 		return tracks;
 	}
 	
-	public double totalLength() {
-		
+	public double totalLength(){
+		double end = 0;
+		for(Track t : tracks)
+		{
+			if(t.startTime() + t.getLength() > end)
+				end = t.startTime() + t.getLength();
+		}
+		return end;
 	}
 	
-	public void play() {
+	public void play() 
+	{
+		if(failedTracks().size() > 0)
+			return;
+		long currentTime = System.currentTimeMillis();
+		
 		
 	}
 	
