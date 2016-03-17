@@ -12,6 +12,7 @@ public class MainMenuBar implements ActionListener{
 	
 	MainMenuBar(TrackList trackList){
 		MenuBar=new JMenuBar();
+		MenuBar.add(Box.createRigidArea(new Dimension(100,25)));
 
 		menuFile=new JMenu("File");
 
