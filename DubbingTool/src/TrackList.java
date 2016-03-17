@@ -281,6 +281,29 @@ public class TrackList {
 	
 	private AudioFormat getHighestQualityFormat()
 	{
+		int numChannels = 1;
+		float highestBitRate = 11025;
+		int sampleSize = 8;
+		for(Track t : tracks)
+		{
+			AudioFormat f = t.getFormat();
+			if(f.getChannels() > numChannels)
+			{
+				numChannels = f.getChannels();
+			}
+			
+			if(f.getFrameRate() > highestBitRate)
+			{
+				highestBitRate = f.getFrameRate();
+			}
+				
+			if(f.getSampleSizeInBits() > sampleSize)
+			{
+				sampleSize = f.getSampleSizeInBits();
+			}
+		}
+		
+		return new AudioFormat(highestBitRate, sampleSize, numChannels, true, false);
   	}
 	
 	public AudioFormat getTrackListFormat()
