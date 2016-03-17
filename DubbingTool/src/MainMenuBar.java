@@ -9,7 +9,7 @@ public class MainMenuBar implements ActionListener{
 	JMenu menuFile, menuRecording;
 	JMenuItem itemOpen, itemNew, itemSaveAs, itemQuite;
 	JMenuItem itemNewTrack, itemCreateRecording, itemPreview, itemExport;
-	
+
 	MainMenuBar(TrackList trackList){
 		MenuBar=new JMenuBar();
 		MenuBar.add(Box.createRigidArea(new Dimension(100,25)));
@@ -43,12 +43,12 @@ public class MainMenuBar implements ActionListener{
 		itemExport=new JMenuItem("Export");
 		itemExport.addActionListener(this);
 		menuRecording.add(itemExport);
-		
+
 		MenuBar.add(menuFile);
 		MenuBar.add(menuRecording);
-		
-		
-		
+
+
+
 	}
 	public void disableButtons(){
 		itemSaveAs.setEnabled(false);
@@ -94,6 +94,7 @@ public class MainMenuBar implements ActionListener{
 					tracklist.setFileName(file.getName());
 					tracklist.save(file);
 				}
+			}
 		}
 		if(e.getSource() == itemQuite){
 			System.exit(0);
@@ -117,6 +118,6 @@ public class MainMenuBar implements ActionListener{
 					tracklist.setFileName(file.getName());
 					tracklist.export(file);
 				}
+			}
 		}
 	}
-}
