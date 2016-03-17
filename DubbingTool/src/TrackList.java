@@ -5,8 +5,10 @@ import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import javax.sound.sampled.AudioFormat;
+import javax.swing.JOptionPane;
 import javax.xml.parsers.*;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -151,10 +153,14 @@ public class TrackList {
 			ActionEvent ev = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "updateScript");
 			listener.actionPerformed(ev);
 		}
-		this.save(this.getFileName());
+		try {
+			this.save(this.getFileName());
+		} catch (BadPathException ex) {
+			JOptionPane.showMessageDialog(null, "The path isn't accessible.");
+		}
 	}
 	
-	public void save(String filename) {
+	public void save(String filename) throws BadPathException {
 		try {
 			DocumentBuilderFactory dBuilderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dBuilderFactory.newDocumentBuilder();
@@ -201,13 +207,18 @@ public class TrackList {
 				trackElement.appendChild(length);
 				length.appendChild(script.createTextNode("0"));
 				trackElement.appendChild(length);
-				
-				TransformerFactory tFactory = TransformerFactory.newInstance();
-				Transformer transformer = tFactory.newTransformer();
-				DOMSource source = new DOMSource(script);
-				StreamResult sresult = new StreamResult(new File(filename));
-				transformer.transform(source, sresult);
 			}
+			
+			TransformerFactory tFactory = TransformerFactory.newInstance();
+			Transformer transformer = tFactory.newTransformer();
+			DOMSource source = new DOMSource(script);
+			StreamResult sresult = new StreamResult(new File(filename));
+			transformer.transform(source, sresult);
+		}
+		catch (ParserConfigurationException ex) {
+			throw new BadPathException();
+		} catch (TransformerException ex) {
+			throw new BadPathException();
 		}
 	}
 	
@@ -280,10 +291,5 @@ public class TrackList {
 	public static int nextID()
 	{
 		return currentID++;
-	}
-	
-	private AudioFormat getHighestQualityFormat()
-	{
-		
 	}
 }
