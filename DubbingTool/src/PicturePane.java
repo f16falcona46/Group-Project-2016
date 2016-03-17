@@ -9,9 +9,9 @@ import java.awt.Image;
 public class PicturePane extends JPanel implements ActionListener, MouseListener {
 
 	private TrackList list;
-	private ImageIcon leftTrack = new ImageIcon(this.getClass().getResource("GraphicsElementLeft"));
-	private ImageIcon rightTrack = new ImageIcon(this.getClass().getResource("GraphicsElementRight"));
-	private ImageIcon centerTrack = new ImageIcon(this.getClass().getResource("GraphicsElementCenter"));
+	private ImageIcon leftTrack = new ImageIcon(this.getClass().getResource("GraphicsElementLeft.png"));
+	private ImageIcon rightTrack = new ImageIcon(this.getClass().getResource("GraphicsElementRight.png"));
+	private ImageIcon centerTrack = new ImageIcon(this.getClass().getResource("GraphicsElementCenter.png"));
 	private static final int SCALE_SPACING = 15;
 	private static final int SIDE_WIDTH = 10;
 	private static final int IMAGE_HEIGHT = 32;
