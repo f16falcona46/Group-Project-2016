@@ -21,7 +21,7 @@ public class MainMenuBar implements ActionListener{
 		itemNew=new JMenuItem("New");
 		itemNew.addActionListener(this);
 		menuFile.add(itemNew);
-		itemSaveAs=new JMenuItem("SaveAs");
+		itemSaveAs=new JMenuItem("Save As");
 		itemSaveAs.addActionListener(this);
 		menuFile.add(itemSaveAs); 
 		itemQuite=new JMenuItem("Quit");
@@ -30,10 +30,10 @@ public class MainMenuBar implements ActionListener{
 
 		menuRecording=new JMenu("Recording");
 
-		itemNewTrack=new JMenuItem("NewTrack");
+		itemNewTrack=new JMenuItem("New Track");
 		itemNewTrack.addActionListener(this);
 		menuRecording.add(itemNewTrack);
-		itemCreateRecording=new JMenuItem("CreateRecording");
+		itemCreateRecording=new JMenuItem("Create Recording");
 		itemCreateRecording.addActionListener(this);
 		menuRecording.add(itemCreateRecording);
 		itemPreview=new JMenuItem("Preview");
@@ -41,7 +41,13 @@ public class MainMenuBar implements ActionListener{
 		menuRecording.add(itemPreview);
 		itemExport=new JMenuItem("Export");
 		itemExport.addActionListener(this);
-		menuRecording.add(itemExport);		
+		menuRecording.add(itemExport);
+		
+		MenuBar.add(menuFile);
+		MenuBar.add(menuRecording);
+		
+		
+		
 	}
 	public void disableButtons(){
 		itemSaveAs.setEnabled(false);
@@ -70,9 +76,46 @@ public class MainMenuBar implements ActionListener{
 			itemNewTrack.setEnabled(true);
 		}
 		if(e.getSource() == itemNew){
-			JOptionPane.showMessageDialog(null, "Selected Item: " + e.getActionCommand());
+			JFileChooser fc = new JFileChooser();
+			int returnVal = fc.showDialog(itemOpen, "Open");
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				File file = fc.getSelectedFile();
+			}
+			itemRecording.setEnabled(true);
+			itemSaveAs.setEnabled(true);
 		}
-
+		if(e.getSource() == itemSaveAs0){
+			if(e.getSource() == itemNew){
+				JFileChooser fc = new JFileChooser();
+				int returnVal = fc.showDialog(itemOpen, "Open");
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					File file = fc.getSelectedFile();
+					tracklist.setFileName(file.getName());
+					tracklist.save(file);
+				}
+		}
+		if(e.getSource() == itemQuite){
+			System.exit(0);
+		}
+		if(e.getSource() == itemNewTrack){
+			Track newtrack = new Track(track.RECORD, tracklist);
+			EditTrackDialog diag = new EditTRackdialog(newtrack);
+		}
+		if(e.getSource() == itemCreateRecording){
+			Track newtrack = new Track(track.RECORD, tracklist);
+		}
+		if(e.getSource() == itemPreview){
+			tracklist.play();
+		}
+		if(e.getSource() == itemExport){
+			if(e.getSource() == itemNew){
+				JFileChooser fc = new JFileChooser();
+				int returnVal = fc.showDialog(itemOpen, "Open");
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					File file = fc.getSelectedFile();
+					tracklist.setFileName(file.getName());
+					tracklist.export(file);
+				}
+		}
 	}
-
 }
