@@ -11,17 +11,14 @@ import java.util.Date;
 import javax.swing.table.AbstractTableModel;
 
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-/* SKELETON CLASS ONLY! DOES NOT DO ANYTHING. */
 
 public class TrackTable extends JPanel implements ActionListener, MouseListener {
 	private TrackList list;
@@ -75,15 +72,9 @@ public class TrackTable extends JPanel implements ActionListener, MouseListener 
 		*/
 		if (ev.getClickCount()==2 && !ev.isConsumed()) {
 			if (ev.getButton() == MouseEvent.BUTTON1) {
-				System.out.println("double");
+				new EditTrackDialog(list.get(table.getSelectedRow()));
 			}
 			ev.consume();
-		}
-		else {
-			if (ev.getButton() == MouseEvent.BUTTON3) {
-				System.out.println("rightclick?");
-				
-			}
 		}
 	}
 
@@ -113,9 +104,7 @@ public class TrackTable extends JPanel implements ActionListener, MouseListener 
 		}
 	}
 	
-	//TODO: IMPLEMENT
 	public void actionPerformed(ActionEvent ev) {
-		System.out.println(ev.getActionCommand());
 		switch (ev.getActionCommand()) {
 		case "updateScript":
 			this.invalidate();
@@ -140,14 +129,6 @@ public class TrackTable extends JPanel implements ActionListener, MouseListener 
 		else {
 			return list.get(row);
 		}
-	}
-	
-	public static void main(String[] args) {
-		TrackTable a = new TrackTable(new TrackList());
-		JFrame b = new JFrame();
-		b.setContentPane(a);
-		b.pack();
-		b.setVisible(true);
 	}
 }
 
@@ -214,17 +195,13 @@ class TrackTableModel extends AbstractTableModel {
 	public Object getValueAt(int row, int col) {
 		switch (col) {
 		case 0:
-			//return formatFileName(row);
-			return "FNAME";
+			return formatFileName(row);
 		case 1:
-			//return formatStartTime(list.get(row).startTime());
-			return "STARTTIME";
+			return formatStartTime(list.get(row).startTime());
 		case 2:
-			//return formatAttachedTo(row);
-			return "ATTO";
+			return formatAttachedTo(row);
 		case 3:
-			//return Math.round(list.get(row).getIntensity())+"%";
-			return "INTEN";
+			return Math.round(list.get(row).getIntensity())+"%";
 		default:
 			return "Error, column out of range";
 		}
