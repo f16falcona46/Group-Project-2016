@@ -8,9 +8,10 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.JOptionPane;
 
 
-public class Track 
+public class Track implements Runnable
 {
 	private String fileName;
 	private double length;
@@ -24,6 +25,7 @@ public class Track
 	private Clip soundClip;
 	
 	private boolean isGood;
+	private volatile boolean terminateSound;
 	
 	public static final int RECORD = 1;
 	public static final boolean START = true;
@@ -97,8 +99,7 @@ public class Track
 		isGood = true;
 	}
 	
-	
-	public void play()
+	public void playNoBlock()
 	{
 		try 
 		{
@@ -110,6 +111,23 @@ public class Track
 			tracklist.updateActionListeners();
 		}
 		soundClip.start();
+	}
+	
+	public void play()
+	{
+		playNoBlock();
+		terminateSound = false;
+		Thread t = new Thread(this);
+		t.start();
+		while(soundClip.isRunning() && !terminateSound);
+		t.interrupt();
+	}
+	
+	//	FOR PLAY METHOD
+	public void run()
+	{
+		JOptionPane.showMessageDialog(null, "Preview...");
+		terminateSound = true;
 	}
 	
 	public Clip getSound()
@@ -264,4 +282,6 @@ public class Track
 		frameLength *= ((double)tracklist.getTrackListFormat().getChannels() / (double)s.getFormat().getChannels());
 		return (long)ret;
 	}
+
+	
 }
