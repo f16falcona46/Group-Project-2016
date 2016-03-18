@@ -46,9 +46,6 @@ public class MainMenuBar implements ActionListener{
 
 		MenuBar.add(menuFile);
 		MenuBar.add(menuRecording);
-
-
-
 	}
 	public void disableButtons(){
 		itemSaveAs.setEnabled(false);
@@ -66,26 +63,24 @@ public class MainMenuBar implements ActionListener{
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == itemOpen){
+		if(e.getSource() == itemOpen){								//open
 			JFileChooser fc = new JFileChooser();
 			int returnVal = fc.showDialog(itemOpen, "Open");
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				File file = fc.getSelectedFile();
 				tracklist.setFileName(file.getName());
 			}
-			itemSaveAs.setEnabled(true);
-			itemNewTrack.setEnabled(true);
+			this.disableButtons();
 		}
-		if(e.getSource() == itemNew){
+		if(e.getSource() == itemNew){								//new
 			JFileChooser fc = new JFileChooser();
 			int returnVal = fc.showDialog(itemOpen, "Open");
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				File file = fc.getSelectedFile();
 			}
-			itemRecording.setEnabled(true);
-			itemSaveAs.setEnabled(true);
+			this.enableButtons();
 		}
-		if(e.getSource() == itemSaveAs0){
+		if(e.getSource() == itemSaveAs0){							//save as
 			if(e.getSource() == itemNew){
 				JFileChooser fc = new JFileChooser();
 				int returnVal = fc.showDialog(itemOpen, "Open");
@@ -96,20 +91,20 @@ public class MainMenuBar implements ActionListener{
 				}
 			}
 		}
-		if(e.getSource() == itemQuite){
+		if(e.getSource() == itemQuite){								//quite
 			System.exit(0);
 		}
-		if(e.getSource() == itemNewTrack){
+		if(e.getSource() == itemNewTrack){							//new track
 			Track newtrack = new Track(track.RECORD, tracklist);
 			EditTrackDialog diag = new EditTRackdialog(newtrack);
 		}
-		if(e.getSource() == itemCreateRecording){
+		if(e.getSource() == itemCreateRecording){					//create recording
 			Track newtrack = new Track(track.RECORD, tracklist);
 		}
-		if(e.getSource() == itemPreview){
+		if(e.getSource() == itemPreview){							//preview
 			tracklist.play();
 		}
-		if(e.getSource() == itemExport){
+		if(e.getSource() == itemExport){							//export
 			if(e.getSource() == itemNew){
 				JFileChooser fc = new JFileChooser();
 				int returnVal = fc.showDialog(itemOpen, "Open");
