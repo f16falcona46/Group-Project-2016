@@ -28,7 +28,7 @@ public class PicturePane extends JPanel implements ActionListener, MouseListener
 		g.drawLine(0,SCALE_SPACING,this.getWidth(), SCALE_SPACING);
 		int mark = 0;
 		while(mark<list.totalLength()) {
-			g.drawLine(Integer.parseInt(mark), mark*PIXELS_PER_SECOND, 0, mark*PIXELS_PER_SECOND, SCALE_SPACING);
+			g.drawLine(Integer.toString(mark), mark*PIXELS_PER_SECOND, 0, mark*PIXELS_PER_SECOND, SCALE_SPACING);
 			g.drawString(mark,mark*PIXELS_PER_SECOND,SCALE_SPACING);
 			mark+=SCALE_INTERVAL;
 		}
