@@ -30,6 +30,7 @@ public class TrackList {
 		actionlisteners = new ArrayList<ActionListener>();
 	}
 
+	/*
 	TrackList(String name) throws BadFileException, BadPathException {
 		tracks = new ArrayList<Track>();
 		actionlisteners = new ArrayList<ActionListener>();
@@ -93,6 +94,7 @@ public class TrackList {
 		
 		currentID = highestID;
 	}
+	*/
 	
 	public void add(Track newTrack) {
 		tracks.add(newTrack);
@@ -104,7 +106,9 @@ public class TrackList {
 	}
 	
 	public Track remove(int index) {
-		return tracks.remove(index);
+		Track track = tracks.remove(index);
+		updateActionListeners();
+		return track;
 	}
 	
 	public int numTracks() {
@@ -156,7 +160,7 @@ public class TrackList {
 		try {
 			this.save(this.getFileName());
 		} catch (BadPathException ex) {
-			JOptionPane.showMessageDialog(null, "The path isn't accessible.");
+			JOptionPane.showMessageDialog(null, "The path for saving the script isn't accessible.");
 		}
 	}
 	
@@ -273,6 +277,7 @@ public class TrackList {
 		catch (IOException e) {
 			throw new BadPathException();
 		}
+		updateActionListeners();
 	}
 	
 	public String getFileName() {
