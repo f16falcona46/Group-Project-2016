@@ -30,6 +30,32 @@ public class Track
 	public static final boolean END = false;
 	public static final int TRACK_BEGINNING = 0;
 	
+	public Track(String fileName, TrackList tracklist)
+	{
+		this.fileName = fileName;
+		intensity = 100;
+		ID = TrackList.nextID();
+		relativeTo = 0;
+		startEnd = START;
+		this.tracklist = tracklist;
+		isGood = true;
+		try 
+		{
+			soundClip = AudioSystem.getClip();
+		} 
+		catch(LineUnavailableException e) 
+		{}
+		try 
+		{
+			loadStream();
+		} 
+		catch (Exception e)
+		{
+			isGood = false;
+			tracklist.updateActionListeners();
+		}
+	}
+	
 	public Track(String fileName, double intensity, int relativeTo, boolean startEnd, int ID, TrackList tracklist)
 	{
 		this.fileName = fileName;
@@ -38,6 +64,7 @@ public class Track
 		this.startEnd = startEnd;
 		this.ID = ID;
 		this.tracklist = tracklist;
+		isGood = true;
 		try 
 		{
 			soundClip = AudioSystem.getClip();
@@ -50,17 +77,11 @@ public class Track
 		{
 			loadStream();
 		} 
-		catch (IOException e) 
+		catch (Exception e)
 		{
 			isGood = false;
-		} 
-		catch (UnsupportedAudioFileException e)
-		{
-			isGood = false;
-		} 
-		catch (UnsupportedConversionException e)
-		{
-			isGood = false;
+
+			tracklist.updateActionListeners();
 		}
 	}
 	
@@ -73,6 +94,7 @@ public class Track
 		relativeTo = Track.TRACK_BEGINNING;
 		startEnd = START;
 		intensity = 100;
+		isGood = true;
 	}
 	
 	
@@ -82,17 +104,10 @@ public class Track
 		{
 			loadStream();
 		}
-		catch (IOException e) 
+		catch (Exception e)
 		{
 			isGood = false;
-		} 
-		catch (UnsupportedAudioFileException e)
-		{
-			isGood = false;
-		} 
-		catch (UnsupportedConversionException e)
-		{
-			isGood = false;
+			tracklist.updateActionListeners();
 		}
 		soundClip.start();
 	}
@@ -113,6 +128,7 @@ public class Track
 		catch(Exception e) 
 		{
 			isGood = false;
+			tracklist.updateActionListeners();
 		}
 	}
 	
@@ -129,6 +145,7 @@ public class Track
 	public void setIntensity(double intensity)
 	{
 		this.intensity = intensity;
+		tracklist.updateActionListeners();
 	}
 	
 	public double getIntensity()
@@ -139,6 +156,7 @@ public class Track
 	public void setRelativeTo(int ID) 
 	{
 		this.relativeTo = ID;
+		tracklist.updateActionListeners();
 	}
 	
 	public int getRelativeID() 
@@ -149,6 +167,7 @@ public class Track
 	public void setStartEnd(boolean startEnd) 
 	{
 		this.startEnd = startEnd;
+		tracklist.updateActionListeners();
 	}
 	
 	public boolean getStartEnd()
@@ -178,6 +197,11 @@ public class Track
 		return ID;
 	}
 	
+	public AudioFormat getFormat()
+	{
+		return dataStream.getFormat();
+	}
+	
 	//~~
 
 	private void reloadClip()
@@ -204,14 +228,14 @@ public class Track
 		soundClip.setFramePosition(0);
 	}
 	
-	private void loadStream() throws IOException, UnsupportedAudioFileException, UnsupportedConversionException
+	private void loadStream() throws IOException, UnsupportedAudioFileException, Exception
 	{
 		if(dataStream != null)
 			dataStream.close();
 		dataStream = getConvertedInputStream(AudioSystem.getAudioInputStream(new File(fileName)));
 	}
 	
-	private AudioInputStream getConvertedInputStream(AudioInputStream s) throws UnsupportedConversionException
+	private AudioInputStream getConvertedInputStream(AudioInputStream s) throws Exception
 	{
 		this.lengthInSamples = getSampleLength(s);
 		this.length = getLength(s, this.lengthInSamples);
@@ -222,7 +246,7 @@ public class Track
 			AudioInputStream ret = AudioSystem.getAudioInputStream(tracklist.getTrackListFormat(), s);
 			return ret;
 		}
-		throw new UnsupportedConversionException();
+		throw new Exception();
 	}
 	
 	private double getLength(AudioInputStream s, long samples)
