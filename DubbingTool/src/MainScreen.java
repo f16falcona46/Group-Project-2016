@@ -8,14 +8,18 @@ public class MainScreen extends JFrame{
 		JFrame mainFrame = new JFrame("[No file opened] - Dubbing Tool");
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		try { 
+			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel"); 
+		} catch (Exception ex) { }
 		
 		this.tracklist = tracklist;
 		MainMenuBar menuBar = new MainMenuBar(tracklist);
-		mainFrame.add(menuBar);
-		//TrackTablePane trackTablePane = new TrackTablePane(tracklist);
-		PicturePane picturPane = new PicturePane(tracklist);
-		//JScrollPane rightPane = new JScrollPane(picturePane.contentPane);
-		//JSplitPane splitPane = new JSplitPane(TrackTablePane, rightPane);
+		mainFrame.setJMenuBar(menuBar.getMenuBar());
+		TrackTablePane trackTablePane = new TrackTablePane(tracklist);
+		PicturePane picturePane = new PicturePane(tracklist);
+		JScrollPane rightPane = new JScrollPane(picturePane);
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, trackTablePane, rightPane);
+		mainFrame.add(splitPane);
 		
 		mainFrame.pack();
 		mainFrame.setVisible(true);

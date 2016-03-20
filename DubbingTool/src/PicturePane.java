@@ -9,9 +9,9 @@ import java.awt.Image;
 public class PicturePane extends JPanel implements ActionListener, MouseListener {
 
 	private TrackList list;
-	private ImageIcon leftTrack = new ImageIcon(this.getClass().getResource("GraphicsElementLeft.png"));
-	private ImageIcon rightTrack = new ImageIcon(this.getClass().getResource("GraphicsElementRight.png"));
-	private ImageIcon centerTrack = new ImageIcon(this.getClass().getResource("GraphicsElementCenter.png"));
+	//private ImageIcon leftTrack = new ImageIcon(this.getClass().getResource("GraphicsElementLeft.png"));
+	//private ImageIcon rightTrack = new ImageIcon(this.getClass().getResource("GraphicsElementRight.png"));
+	//private ImageIcon centerTrack = new ImageIcon(this.getClass().getResource("GraphicsElementCenter.png"));
 	private static final int SCALE_SPACING = 15;
 	private static final int SIDE_WIDTH = 10;
 	private static final int IMAGE_HEIGHT = 32;
@@ -28,8 +28,8 @@ public class PicturePane extends JPanel implements ActionListener, MouseListener
 		g.drawLine(0,SCALE_SPACING,this.getWidth(), SCALE_SPACING);
 		int mark = 0;
 		while(mark<list.totalLength()) {
-			g.drawLine(Integer.toString(mark), mark*PIXELS_PER_SECOND, 0, mark*PIXELS_PER_SECOND, SCALE_SPACING);
-			g.drawString(mark,mark*PIXELS_PER_SECOND,SCALE_SPACING);
+			//g.drawLine(Integer.toString(mark), mark*PIXELS_PER_SECOND, 0, mark*PIXELS_PER_SECOND, SCALE_SPACING);
+			//g.drawString(mark,mark*PIXELS_PER_SECOND,SCALE_SPACING);
 			mark+=SCALE_INTERVAL;
 		}
 		
@@ -73,10 +73,10 @@ public class PicturePane extends JPanel implements ActionListener, MouseListener
 			int y = e.getY();
 			int x = e.getX();
 			int tracknum = y/IMAGE_HEIGHT;
-			int start = list.get(tracknum).startTime() * PIXELS_PER_SECOND;
-			int end = start + list.get(tracknum).getLength() * PIXELS_PER_SECOND;
+			int start = (int)(list.get(tracknum).startTime() * PIXELS_PER_SECOND);
+			int end = (int)(start + list.get(tracknum).getLength() * PIXELS_PER_SECOND);
 			if (x>=start && x<=end) {
-				EditTrackDialogue eTD= new EditTrackDialogue(trackNum); 
+				EditTrackDialog eTD= new EditTrackDialog(list.get(tracknum), list); 
 			}
 		}
 	}
@@ -107,7 +107,7 @@ public class PicturePane extends JPanel implements ActionListener, MouseListener
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand.eqauls("updateScript")) {
+		if (e.getActionCommand().equals("updateScript")) {
 			repaint();
 		}
 	}

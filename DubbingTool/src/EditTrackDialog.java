@@ -30,9 +30,7 @@ public class EditTrackDialog extends JFrame implements ActionListener {
 		this.setResizable(false);
 		try { 
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel"); 
-		} catch (Exception ex) { 
-			ex.printStackTrace(); 
-		}
+		} catch (Exception ex) { }
 		
 		JPanel pane = new JPanel(new GridBagLayout());	
 		Border margin = new EmptyBorder(10,10,10,10);

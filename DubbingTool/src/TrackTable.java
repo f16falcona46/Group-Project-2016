@@ -1,3 +1,4 @@
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Point;
@@ -37,7 +38,7 @@ public class TrackTable extends JPanel implements ActionListener, MouseListener 
 		}
 
 		table = new JTable(new TrackTableModel(this.list));
-		table.setPreferredScrollableViewportSize(new Dimension(500, 200));
+		table.setPreferredScrollableViewportSize(table.getPreferredSize());
 		table.setRowHeight(32);
 		table.setFillsViewportHeight(true);
 		table.addMouseListener(this);
@@ -54,7 +55,9 @@ public class TrackTable extends JPanel implements ActionListener, MouseListener 
 		
 		JScrollPane scrollPane = new JScrollPane(table);
 		
-		add(scrollPane);
+		this.setLayout(new BorderLayout());
+		
+		add(scrollPane, BorderLayout.CENTER);
 	}
 	/*Creates a JTable reflecting the provided TrackList, adding this TrackTable to the TrackList’s ActionListeners. The format of the table is as in the storyboard, except with no Actions column.*/
 	
@@ -72,7 +75,9 @@ public class TrackTable extends JPanel implements ActionListener, MouseListener 
 		*/
 		if (ev.getClickCount()==2 && !ev.isConsumed()) {
 			if (ev.getButton() == MouseEvent.BUTTON1) {
-				new EditTrackDialog(list.get(table.getSelectedRow()));
+				if (table.getSelectedRow() != -1) {
+					new EditTrackDialog(list.get(table.getSelectedRow()), list);
+				}
 			}
 			ev.consume();
 		}
@@ -100,7 +105,9 @@ public class TrackTable extends JPanel implements ActionListener, MouseListener 
 			int row = table.rowAtPoint(p);
 			ListSelectionModel model = table.getSelectionModel();
 			model.setSelectionInterval(row,row);
-			popup.show(ev.getComponent(), ev.getX(), ev.getY());
+			if (table.getSelectedRow() != -1) {
+				popup.show(ev.getComponent(), ev.getX(), ev.getY());
+			}
 		}
 	}
 	
@@ -109,15 +116,19 @@ public class TrackTable extends JPanel implements ActionListener, MouseListener 
 		case "updateScript":
 			this.invalidate();
 		case "Edit...":
-			new EditTrackDialog(list.get(table.getSelectedRow()));
+			if (table.getSelectedRow() != -1) {
+				new EditTrackDialog(list.get(table.getSelectedRow()), list);
+			}
 		case "Delete":
-			if (DeleteTrackConfirmation.showDialog()) {
-				list.remove(table.getSelectedRow());
+			if (table.getSelectedRow() != -1) {
+				if (DeleteTrackConfirmation.showDialog()) {
+					list.remove(table.getSelectedRow());
+				}
 			}
 		}
 	}
 	
-	Track getSelected() {
+	public Track getSelected() {
 		/*
 		Track getSelected()
 		Returns the selected Track.
@@ -129,6 +140,10 @@ public class TrackTable extends JPanel implements ActionListener, MouseListener 
 		else {
 			return list.get(row);
 		}
+	}
+	
+	public int getSelectedIndex() {
+		return table.getSelectedRow();
 	}
 }
 
@@ -158,8 +173,7 @@ class TrackTableModel extends AbstractTableModel {
 	}
 
 	public int getRowCount() {
-		//return list.numTracks();
-		return 25;
+		return list.numTracks();
 	}
 	
 	private String formatFileName(int row) {

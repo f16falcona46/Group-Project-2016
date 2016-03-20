@@ -158,13 +158,16 @@ public class TrackList {
 			listener.actionPerformed(ev);
 		}
 		try {
-			this.save(this.getFileName());
+			if (this.getFileName() != null) {
+				this.save(this.getFileName());
+			}
 		} catch (BadPathException ex) {
 			JOptionPane.showMessageDialog(null, "The path for saving the script isn't accessible.");
 		}
 	}
 	
 	public void save(String filename) throws BadPathException {
+		System.out.println(filename);
 		try {
 			DocumentBuilderFactory dBuilderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dBuilderFactory.newDocumentBuilder();
@@ -216,7 +219,8 @@ public class TrackList {
 			TransformerFactory tFactory = TransformerFactory.newInstance();
 			Transformer transformer = tFactory.newTransformer();
 			DOMSource source = new DOMSource(script);
-			StreamResult sresult = new StreamResult(new File(filename));
+			File file = new File(filename);
+			StreamResult sresult = new StreamResult(file);
 			transformer.transform(source, sresult);
 		}
 		catch (ParserConfigurationException ex) {
@@ -319,5 +323,14 @@ public class TrackList {
 	public static int nextID()
 	{
 		return currentID++;
+	}
+	
+	public void export(String filename) {
+		
+	}
+	
+	public void clear() {
+		tracks = new ArrayList<Track>();
+		updateActionListeners();
 	}
 }
