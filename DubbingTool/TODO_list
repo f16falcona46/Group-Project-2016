@@ -1,4 +1,6 @@
 TODOs for AOOD group project:
+Done, needs testing: Add the "Edit" and "Delete" buttons on TrackTablePane
+	Add the time scale for PicturePane
 	Make vertical scrollbar and link it
 	Make horizontal scrollbar and link it
 	Fix startTime() problem
@@ -10,5 +12,6 @@ Apparently should be fixed when sound works: Make sensible defaults in Track
 	EditTrackDialog should not be able to make a Track relative to itself
 	EditTrackDialog should disable the "End" radiobutton when "Start" is selected
 	Make a separate name and filename for Tracks
+	Make EditTrackDialog not close the whole program when only it is closed
 
 	get sound to work ffs
