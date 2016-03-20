@@ -4,9 +4,11 @@ TODOs for AOOD group project:
 	Fix startTime() problem
 	Find out how to prevent loops in relative IDs
 Done? Needs testing: Update all JFileChoosers to only select certain file types
-	Make the PicturePane repaint itself when things change
+Done, needs testing: Make the PicturePane repaint itself when things change
 Apparently should be fixed when sound works: Make sensible defaults in Track
 	When EditTrackDialog opens, make the selected values mirror the already existing ones
 	EditTrackDialog should not be able to make a Track relative to itself
+	EditTrackDialog should disable the "End" radiobutton when "Start" is selected
+	Make a separate name and filename for Tracks
 
 	get sound to work ffs
