@@ -22,7 +22,6 @@ public class TrackList {
 	private String fileName;
 	
 	private AudioFormat format;
-	private static int currentID = 1;
 	
 	TrackList() {
 		format = null;
@@ -106,6 +105,13 @@ public class TrackList {
 	}
 	
 	public Track remove(int index) {
+		ArrayList<Track> tracksAffected = new ArrayList<Track>();
+		for (Track t : tracks) {
+			if (this.get(index).getID() == t.getRelativeID()) {
+				tracksAffected.add(t);
+			}
+		}
+		
 		Track track = tracks.remove(index);
 		updateActionListeners();
 		return track;
@@ -325,9 +331,13 @@ public class TrackList {
 		return format;
 	}
 
-	public static int nextID()
+	public int nextID()
 	{
-		return currentID++;
+		int highestID = 0;
+		for (Track t : tracks) {
+			if (t.getID() > highestID) highestID = t.getID();
+		}
+		return highestID + 1;
 	}
 	
 	public void export(String filename) {
@@ -344,5 +354,14 @@ public class TrackList {
 	public void clear() {
 		tracks = new ArrayList<Track>();
 		updateActionListeners();
+	}
+	
+	public int getIndexByID(int ID) {
+		for (int i = 0; i < this.numTracks(); ++i) {
+			if (this.get(i).getID() == ID) {
+				return i;
+			}
+		}
+		return -1;
 	}
 }

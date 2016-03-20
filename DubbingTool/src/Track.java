@@ -36,7 +36,7 @@ public class Track implements Runnable
 	{
 		this.fileName = fileName;
 		intensity = 100;
-		ID = TrackList.nextID();
+		ID = tracklist.nextID();
 		relativeTo = 0;
 		startEnd = START;
 		this.tracklist = tracklist;
@@ -190,6 +190,7 @@ public class Track implements Runnable
 	
 	public boolean getStartEnd()
 	{
+		if (this.getRelativeID() == 0) return Track.START;
 		return startEnd;
 	}
 	
@@ -202,7 +203,7 @@ public class Track implements Runnable
 	{
 		if(relativeTo == 0)
 			return 0;
-		Track relativeTrack = tracklist.get(relativeTo);
+		Track relativeTrack = tracklist.get(tracklist.getIndexByID(relativeTo));
 		double relativeTime = relativeTrack.startTime();
 		if(startEnd == START) //relative to beginning
 			return relativeTime;
@@ -283,5 +284,8 @@ public class Track implements Runnable
 		return (long)ret;
 	}
 
-	
+	public String getShortFileName() {
+		File file = new File(this.getFileName());
+		return file.getName();
+	}
 }
