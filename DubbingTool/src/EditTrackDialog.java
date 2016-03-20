@@ -14,7 +14,7 @@ public class EditTrackDialog extends JFrame implements ActionListener {
 	private Track backUpTrack;
 	private Track relativeTrack;
 	private TrackList list;
-	private int trackID,relativeID;
+	private int relativeID;
 	private JButton chooser, preview, save, cancel;
 	private JRadioButton beginning, end;
 	private JComboBox chooseTrack;
@@ -22,7 +22,7 @@ public class EditTrackDialog extends JFrame implements ActionListener {
 	private JFileChooser fc;
 	private JSlider ISlider;
 	EditTrackDialog(Track track, TrackList list){
-		trackID = track.getID();
+		//trackID = track.getID();
 		backUpTrack = track;
 		currentTrack = track;
 		this.list = list;
@@ -148,6 +148,14 @@ public class EditTrackDialog extends JFrame implements ActionListener {
 		SwingUtilities.getRootPane(save).setDefaultButton(save);
 		this.setVisible(true);
 		
+		backUpTrack = new Track(
+				currentTrack.getFileName(),
+				currentTrack.getIntensity(),
+				currentTrack.getRelativeID(),
+				currentTrack.getStartEnd(),
+				currentTrack.getID(),
+				null
+				);
 	}
 	private String[] getTrackNames(TrackList list){
 		String[] trackNames = new String[list.numTracks()+1];
@@ -162,7 +170,8 @@ public class EditTrackDialog extends JFrame implements ActionListener {
 			 int returnVal = fc.showOpenDialog(EditTrackDialog.this);
 	            if (returnVal == JFileChooser.APPROVE_OPTION) {
 	                File file = fc.getSelectedFile();
-	                text.setText(file.getName());
+	                text.setText(file.getAbsolutePath());
+	                backUpTrack.setFileName(file.getAbsolutePath());
 	            } else {
 	                text.setText("");
 	            }
@@ -170,28 +179,35 @@ public class EditTrackDialog extends JFrame implements ActionListener {
 		if(e.getSource() == chooseTrack){ 
 			int relInd = chooseTrack.getSelectedIndex();
 			if(relInd == 0)
-				currentTrack.setRelativeTo(0);
+				backUpTrack.setRelativeTo(0);
 			else{
 				end.setEnabled(true);
 				relativeTrack = list.get(relInd-1);
 				relativeID = relativeTrack.getID();
-				currentTrack.setRelativeTo(relativeID);
+				backUpTrack.setRelativeTo(relativeID);
 			}
 		}
 		if(e.getSource() == beginning){
-			currentTrack.setStartEnd(Track.START);
+			backUpTrack.setStartEnd(Track.START);
 		}
 		if(e.getSource() == end){
-			currentTrack.setStartEnd(Track.END);
+			backUpTrack.setStartEnd(Track.END);
 		}
 		if(e.getSource() == preview){
-			currentTrack.play();
+			backUpTrack.play();
 		}
 		if(e.getSource() == save){
+			currentTrack.setFileName(backUpTrack.getFileName());
+			currentTrack.setIntensity(backUpTrack.getIntensity());
+			currentTrack.setRelativeTo(backUpTrack.getRelativeID());
+			currentTrack.setStartEnd(backUpTrack.getStartEnd());
+			
+			/*
 			Track track = list.get(trackID);
 			track.setIntensity(currentTrack.getIntensity());
 			track.setRelativeTo(relativeID);
 			track.setStartEnd(currentTrack.getStartEnd());
+			*/
 			this.setVisible(false);
 			this.dispose();
 			
